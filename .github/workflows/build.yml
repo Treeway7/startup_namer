@@ -27,10 +27,10 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install Packages
-    - run: flutter pub get -v
+      run: flutter pub get -v
 
     - name: Build Executable
-    - run: flutter build ${{ matrix.target }} -v
+      run: flutter build ${{ matrix.target }} -v
 
     - name: Auto Release Binaries
       uses: marvinpinto/action-automatic-releases@latest
