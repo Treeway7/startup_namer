@@ -1,0 +1,44 @@
+name: Build and Release Executables
+on: push
+
+jobs:
+  build:
+    name: Build and Release Executable
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            target: windows
+          - os: macos-latest
+            target: macos
+          - os: ubuntu-latest
+            target: linux
+    steps:
+    - name: Clone and Config Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: master
+    - run: flutter doctor -v
+
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Install Packages
+    - run: flutter pub get -v
+
+    - name: Build Executable
+    - run: flutter build ${{ matrix.target }} -v
+
+    - name: Auto Release Binaries
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: ${{ github.event.repository.updated_at }}
+        prerelease: true
+        title: ${{ github.event.repository.updated_at }}
+        files: 'build/${{ matrix.target }}/runner/release/*.exe'
+
+
