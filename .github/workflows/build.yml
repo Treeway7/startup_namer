@@ -49,6 +49,7 @@ jobs:
     needs: build
     if: github.event_name == 'push'
     name: Auto Release Build
+    runs-on: windows-latest
     steps:
     - name: Get Current Time
       uses: josStorer/get-current-time@v2.0.1
@@ -70,6 +71,7 @@ jobs:
     needs: build
     if: github.event_name == 'release' && github.event.action == 'created'
     name: Add Build to Manually Created Tag
+    runs-on: windows-latest
     steps:
     - name: Add Binaries to Manual Releases
       uses: softprops/action-gh-release@v1
