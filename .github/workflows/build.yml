@@ -23,7 +23,7 @@ jobs:
         channel: master
 
     - name: Config Flutter
-    - run: flutter doctor -v
+      run: flutter doctor -v
 
     - name: Checkout Repository
       uses: actions/checkout@v3
