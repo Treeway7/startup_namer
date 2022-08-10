@@ -12,15 +12,17 @@ jobs:
         include:
           - os: windows-latest
             target: windows
-          - os: macos-latest
-            target: macos
-          - os: ubuntu-latest
-            target: linux
+          # - os: macos-latest
+          #   target: macos
+          # - os: ubuntu-latest
+          #   target: linux
     steps:
-    - name: Clone and Config Flutter
+    - name: Clone Flutter
       uses: subosito/flutter-action@v2
       with:
         channel: master
+
+    - name: Config Flutter
     - run: flutter doctor -v
 
     - name: Checkout Repository
@@ -39,4 +41,4 @@ jobs:
         automatic_release_tag: "latest"
         prerelease: true
         title: ${{ github.event.repository.updated_at }}
-        files: 'build/${{ matrix.target }}/runner/release/*.exe'
+        files: 'build/${{ matrix.target }}/runner/release/'
