@@ -34,6 +34,12 @@ jobs:
     - name: Build Executable
       run: flutter build ${{ matrix.target }} -v
 
+    - name: Zip Executable Files
+      uses: vimtor/action-zip@v1
+      with:
+        files: build/${{ matrix.target }}/runner/release/
+        dest: '${{ github.event.repository.name }}-${{ matrix.target }}.zip'
+
     - name: Auto Release Binaries
       uses: marvinpinto/action-automatic-releases@latest
       with:
@@ -41,4 +47,4 @@ jobs:
         automatic_release_tag: "latest"
         prerelease: true
         title: ${{ github.event.repository.updated_at }}
-        files: 'build/${{ matrix.target }}/runner/release/'
+        files: '${{ github.event.repository.name }}-${{ matrix.target }}.zip'
