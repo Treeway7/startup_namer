@@ -39,6 +39,10 @@ jobs:
         flutter create . -v
         flutter doctor -v
 
+    - name: Install Linux Dependencies
+      if: runner.os == 'Linux'
+      run: sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
     - name: Install Packages
       run: flutter pub get -v
 
