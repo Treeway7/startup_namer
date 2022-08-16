@@ -35,7 +35,7 @@ jobs:
 
     - name: Add Support for All Platforms
       run: |
-        flutter config --enable-${{ matrix.os }}-desktop
+        flutter config --enable-${{ matrix.target }}-desktop
         flutter create .
 
     - name: Install Packages
