@@ -54,9 +54,9 @@ jobs:
       id: format-time
       uses: mad9000/actions-find-and-replace-string@2
       with:
-      source: ${{ github.event.repository.updated_at }}
-      find: ':'
-      replace: '-'
+        source: ${{ github.event.repository.updated_at }}
+        find: ':'
+        replace: '-'
 
     - name: Auto Prerelease Binaries
       uses: marvinpinto/action-automatic-releases@latest
