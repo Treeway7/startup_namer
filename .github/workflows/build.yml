@@ -17,10 +17,10 @@ jobs:
         include:
           - os: windows-latest
             target: windows
-          - os: macos-latest
-            target: macos
-          - os: ubuntu-latest
-            target: linux
+          # - os: macos-latest
+          #   target: macos
+          # - os: ubuntu-latest
+          #   target: linux
     steps:
     - name: Clone Flutter
       uses: subosito/flutter-action@v2
@@ -32,11 +32,6 @@ jobs:
 
     - name: Checkout Repository
       uses: actions/checkout@v3
-
-    - name: Add Support for All Platforms
-      run: |
-        flutter config --enable-${{ matrix.target }}-desktop
-        flutter create .
 
     - name: Install Packages
       run: flutter pub get -v
@@ -50,13 +45,12 @@ jobs:
         files: build/${{ matrix.target }}/runner/release/
         dest: '${{ github.event.repository.name }}-${{ matrix.target }}.zip'
 
-    - name: Format Commit Time
-      id: format-time
-      uses: mad9000/actions-find-and-replace-string@2
+    - name: Get Current Time
+      uses: josStorer/get-current-time@v2.0.1
+      id: current-time
       with:
-        source: ${{ github.event.repository.updated_at }}
-        find: ':'
-        replace: '-'
+        format: YYYY-MM-DD
+        utcOffset: "+00:00"
 
     - name: Auto Prerelease Binaries
       uses: marvinpinto/action-automatic-releases@latest
@@ -64,7 +58,7 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "${{ steps.current-time.outputs.formattedTime }}at${{ steps.current-time.outputs.hour }}-${{ steps.current-time.outputs.minute }}-utc"
         prerelease: true
-        title: ${{ steps.format-time.outputs.value }}
+        title: ${{ github.event.repository.updated_at }}
         files: '${{ github.event.repository.name }}-*.zip'
 
   # manualrelease:
