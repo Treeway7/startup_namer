@@ -13,14 +13,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest] #, macos-latest, ubuntu-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
         include:
           - os: windows-latest
             target: windows
-          # - os: macos-latest
-          #   target: macos
-          # - os: ubuntu-latest
-          #   target: linux
+          - os: macos-latest
+            target: macos
+          - os: ubuntu-latest
+            target: linux
     steps:
     - name: Clone Flutter
       uses: subosito/flutter-action@v2
@@ -33,11 +33,29 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
+    - name: Add Support for All Platforms
+      run: |
+        flutter config --enable-${{ matrix.target }}-desktop -v
+        flutter create . -v
+        flutter doctor -v
+
     - name: Install Packages
       run: flutter pub get -v
 
     - name: Build Executable
       run: flutter build ${{ matrix.target }} -v
+
+    - name: Print File Tree (macOS)
+      if: runner.os == "macOS"
+      run: |
+        brew install tree
+        tree
+
+    - name: Print File Tree (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt install -y tree
+        tree
 
     # - name: Zip Executable Files
     #   uses: vimtor/action-zip@v1
@@ -49,7 +67,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: release-{{ matrix.target }}
-        path: 'build/${{ matrix.target }}/runner/release/'
+        path: 'build/'
 
     # - name: Get Current Time
     #   uses: josStorer/get-current-time@v2.0.1
