@@ -50,12 +50,13 @@ jobs:
         files: build/${{ matrix.target }}/runner/release/
         dest: '${{ github.event.repository.name }}-${{ matrix.target }}.zip'
 
-    - name: Get Current Time
-      uses: josStorer/get-current-time@v2.0.1
-      id: current-time
+    - name: Format Commit Time
+      id: format-time
+      uses: mad9000/actions-find-and-replace-string@2
       with:
-        format: YYYY-MM-DD
-        utcOffset: "+00:00"
+      source: ${{ github.event.repository.updated_at }}
+      find: ':'
+      replace: '-'
 
     - name: Auto Prerelease Binaries
       uses: marvinpinto/action-automatic-releases@latest
@@ -63,7 +64,7 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "${{ steps.current-time.outputs.formattedTime }}at${{ steps.current-time.outputs.hour }}-${{ steps.current-time.outputs.minute }}-utc"
         prerelease: true
-        title: ${{ github.event.repository.updated_at }}
+        title: ${{ steps.format-time.outputs.value }}
         files: '${{ github.event.repository.name }}-*.zip'
 
   # manualrelease:
