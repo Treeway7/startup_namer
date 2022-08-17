@@ -1,14 +1,9 @@
-name: Build and Release Executables
+name: Build
 on: push
-  # push:
-  #   tags-ignore:
-  #     - '**'
-  # release:
-  #   types: [created]
 
 jobs:
   build:
-    name: Build and Release Executable
+    name: Build and Upload Artifacts
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -40,54 +35,19 @@ jobs:
       run: |
         flutter config --enable-${{ matrix.target }}-desktop -v
         flutter create . -v
-        flutter doctor -v
 
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
       run: sudo apt install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
 
-    - name: Install Packages
+    - name: Install Flutter Packages
       run: flutter pub get -v
 
     - name: Build Executable
       run: flutter build ${{ matrix.target }} -v
-
-    # - name: Zip Executable Files
-    #   uses: vimtor/action-zip@v1
-    #   with:
-    #     files: build/${{ matrix.target }}/runner/release/
-    #     dest: '${{ github.event.repository.name }}-${{ matrix.target }}.zip'
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: release-${{ matrix.target }}
         path: ${{ matrix.bin-path }}
-
-    # - name: Get Current Time
-    #   uses: josStorer/get-current-time@v2.0.1
-    #   id: current-time
-    #   with:
-    #     format: YYYY-MM-DD
-    #     utcOffset: "+00:00"
-
-    # - name: Auto Prerelease Binaries
-    #   uses: marvinpinto/action-automatic-releases@latest
-    #   with:
-    #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
-    #     automatic_release_tag: "${{ steps.current-time.outputs.formattedTime }}at${{ steps.current-time.outputs.hour }}-${{ steps.current-time.outputs.minute }}-utc"
-    #     prerelease: true
-    #     title: ${{ github.event.repository.updated_at }}
-    #     files: '${{ github.event.repository.name }}-*.zip'
-
-  # manualrelease:
-  #   needs: build
-  #   if: github.event_name == 'release' && github.event.action == 'created'
-  #   name: Add Build to Manually Created Tag
-  #   runs-on: windows-latest
-  #   steps:
-  #   - name: Add Binaries to Manual Releases
-  #     uses: softprops/action-gh-release@v1
-  #     if: startsWith(github.ref, 'refs/tags/')
-  #     with:
-  #       files: ${{ github.event.repository.name }}-*.zip
