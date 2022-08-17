@@ -17,10 +17,13 @@ jobs:
         include:
           - os: windows-latest
             target: windows
+            bin-path: build/windows/runner/Release
           - os: macos-latest
             target: macos
+            bin-path: build/macos/Build/Products/Release
           - os: ubuntu-latest
             target: linux
+            bin-path: build/linux/x64/release/bundle
     steps:
     - name: Clone Flutter
       uses: subosito/flutter-action@v2
@@ -49,18 +52,6 @@ jobs:
     - name: Build Executable
       run: flutter build ${{ matrix.target }} -v
 
-    - name: Print File Tree (macOS)
-      if: runner.os == 'macOS'
-      run: |
-        brew install tree
-        tree
-
-    - name: Print File Tree (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt install -y tree
-        tree
-
     # - name: Zip Executable Files
     #   uses: vimtor/action-zip@v1
     #   with:
@@ -71,7 +62,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: release-${{ matrix.target }}
-        path: 'build/'
+        path: ${{ matrix.bin-path }}
 
     # - name: Get Current Time
     #   uses: josStorer/get-current-time@v2.0.1
