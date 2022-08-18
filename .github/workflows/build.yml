@@ -8,14 +8,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest] # macos-latest
         include:
           - os: windows-latest
             target: windows
             bin-path: build/windows/runner/Release
-          - os: macos-latest
-            target: macos
-            bin-path: build/macos/Build/Products/Release
+          # - os: macos-latest
+          #   target: macos
+          #   bin-path: build/macos/Build/Products/Release
           - os: ubuntu-latest
             target: linux
             bin-path: build/linux/x64/release/bundle
